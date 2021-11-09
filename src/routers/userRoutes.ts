@@ -4,6 +4,7 @@ import {
     getAllUsers,
     login,
     logout,
+    updateUser,
 } from '../controllers/userController'
 import authController from '../controllers/authController'
 
@@ -14,6 +15,7 @@ router.post('/login', login)
 
 // require protected route: authentication
 router.use(authController.checkAuth)
+router.patch('/', updateUser)
 router.get('/', getAllUsers)
 router.get('/logout', logout)
 

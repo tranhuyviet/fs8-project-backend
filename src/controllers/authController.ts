@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { UnauthorizedError, BadRequestError } from '../helpers/apiError'
 import jwtDecode from 'jwt-decode'
 import userService from '../services/userService'
+import { ReturnUser } from '../models/userModel'
 
 const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -37,8 +38,9 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
             )
 
         // CHECK AUTH PASS -> GRANT ACCESS TO PROTECTED ROUTE
-        req.user = user
-        // res.locals.user = user
+
+        req.user = user._id
+
         next()
     } catch (error) {
         if (error instanceof Error && error.name == 'InvalidTokenError') {

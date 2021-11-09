@@ -25,3 +25,8 @@ export const loginValidate = Yup.object({
     email,
     password,
 })
+
+export const updateUserValidate = Yup.object({
+    name,
+    email,
+})

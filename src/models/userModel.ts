@@ -44,7 +44,8 @@ const userSchema = new Schema(
         },
         image: {
             type: String,
-            default: '',
+            default:
+                'https://res.cloudinary.com/dzaxf70c4/image/upload/v1636489332/avatar_tcj5dx.png',
         },
         password: {
             type: String,
@@ -93,16 +94,6 @@ userSchema.methods.generateJWT = function generateJWT() {
 
 // function return infomation of logged in user
 userSchema.methods.returnAuthUser = function returnAuthUser() {
-    // const token = this.generateJWT()
-    // const cookieOptions = {
-    //     // expires: new Date(
-    //     //     Date.now() + 90 * 24 * 60 * 60 * 1000 // 90 days
-    //     // ),
-    //     // secure: true,
-    //     httpOnly: true,
-    // }
-
-    // res.cookie('jwt', token, cookieOptions)
     return {
         _id: this._id,
         name: this.name,

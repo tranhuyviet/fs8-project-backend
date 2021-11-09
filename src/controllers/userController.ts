@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
-import User from '../models/userModel'
-import { signupValidate, loginValidate } from '../util/validateUser'
+import User, { UserDocument } from '../models/userModel'
+import {
+    signupValidate,
+    loginValidate,
+    updateUserValidate,
+} from '../util/validateUser'
 import { errorParse, ErrorsObj } from '../util/errorParse'
 import { resError, resSuccess } from '../util/returnRes'
 import {
@@ -20,7 +24,7 @@ export const signup = async (
         // checking validate: name, email, password and confirmPassword
         await signupValidate.validate(req.body, { abortEarly: false })
 
-        const { name, email, image = '', password } = req.body
+        const { name, email, image, password } = req.body
         // checking email is exist -> throw error, if not -> create new user
         const isUserExist = await userService.findUserByEmail(email)
         if (isUserExist) {
@@ -30,7 +34,12 @@ export const signup = async (
         }
 
         // create new user
-        const user = new User({ name, email, image })
+        let user: UserDocument
+        if (image) {
+            user = new User({ name, email, image })
+        } else {
+            user = new User({ name, email })
+        }
 
         // hash password
         user.hashPassword(password)
@@ -130,5 +139,54 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
         return resSuccess(res)
     } catch (error) {
         next(new InternalServerError())
+    }
+}
+
+// UPDATE USER PROFILE (name, email, image)
+export const updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // checking validate: name, email
+        // image can be empty
+        await updateUserValidate.validate(req.body, { abortEarly: false })
+
+        const { name, email, image } = req.body
+
+        // check email is exist
+        const isExistEmail = await userService.findUserByEmail(email)
+
+        // if email entered is exist in database
+        if (isExistEmail) {
+            throw new BadRequestError(
+                'Update User Validate Email Error',
+                null,
+                {
+                    email: 'This email is already taken',
+                }
+            )
+        }
+
+        // update user
+        const variables: object = image
+            ? { name, email, image }
+            : { name, email }
+
+        const user = await userService.updateUser(req.user as string, variables)
+        return resSuccess(res, user)
+    } catch (error) {
+        if (error instanceof Error && error.name == 'ValidationError') {
+            next(
+                new BadRequestError(
+                    'Update User Validate Error',
+                    error,
+                    errorParse(error)
+                )
+            )
+        } else {
+            next(error)
+        }
     }
 }

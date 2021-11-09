@@ -16,9 +16,20 @@ const findUserById = async (_id: string): Promise<UserDocument> => {
     return User.findById(_id)
 }
 
+const updateUser = async (
+    _id: string,
+    variables: object
+): Promise<UserDocument> => {
+    return User.findByIdAndUpdate(_id, variables, {
+        new: true,
+        runValidators: true,
+    }).select('-password -tokenResetPassword')
+}
+
 export default {
     create,
     getAllUsers,
     findUserByEmail,
     findUserById,
+    updateUser,
 }
