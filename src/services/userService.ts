@@ -12,8 +12,13 @@ const findUserByEmail = async (email: string): Promise<UserDocument> => {
     return User.findOne({ email })
 }
 
+const findUserById = async (_id: string): Promise<UserDocument> => {
+    return User.findById(_id)
+}
+
 export default {
     create,
     getAllUsers,
     findUserByEmail,
+    findUserById,
 }

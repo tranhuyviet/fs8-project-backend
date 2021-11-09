@@ -18,7 +18,7 @@ export const signup = async (
 
         const { name, email, image = '', password } = req.body
         // checking email is exist -> throw error, if not -> create new user
-        const isUserExist = await User.findOne({ email })
+        const isUserExist = await userService.findUserByEmail(email)
         if (isUserExist) {
             throw new BadRequestError('Signup Validate Email Error', null, {
                 email: 'This email is already taken',
@@ -33,6 +33,11 @@ export const signup = async (
 
         // save user
         await userService.create(user)
+
+        // create cookie
+        res.cookie('jwt-ecommerce-website', user.returnAuthUser().token, {
+            httpOnly: true,
+        })
 
         // return user with authentication
         return resSuccess(res, user.returnAuthUser())
@@ -58,8 +63,6 @@ export const getAllUsers = async (
     next: NextFunction
 ) => {
     try {
-        //TODO: AUTHENTICATION CHECK
-
         const users = await userService.getAllUsers()
         if (!users) throw new NotFoundError('Not found any user')
 
@@ -76,7 +79,6 @@ export const login = async (
     next: NextFunction
 ) => {
     try {
-        console.log(req.body)
         // checking validate: email, password
         await loginValidate.validate(req.body, { abortEarly: false })
 
@@ -92,6 +94,11 @@ export const login = async (
             throw new NotFoundError('Invalid credentials', null, {
                 global: 'Invalid credentials',
             })
+
+        // create cookie
+        res.cookie('jwt-ecommerce-website', user.returnAuthUser().token, {
+            httpOnly: true,
+        })
 
         // return user with authentication
         return resSuccess(res, user.returnAuthUser())

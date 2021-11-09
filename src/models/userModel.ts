@@ -1,8 +1,19 @@
 import mongoose, { Document } from 'mongoose'
+import { Response } from 'express'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { JWT_COOKIE_EXPIRES_IN } from '../util/secrets'
 
 const { Schema, model, models } = mongoose
+
+export interface ReturnUser {
+    _id: string
+    name: string
+    email: string
+    image?: string
+    role: string
+    token?: string
+}
 
 export type UserDocument = Document & {
     name: string
@@ -14,7 +25,7 @@ export type UserDocument = Document & {
     tokenResetPassword: string
     hashPassword: (password: string) => void
     isValidPassword: (password: string) => boolean
-    returnAuthUser: () => object
+    returnAuthUser: () => ReturnUser
 }
 
 const userSchema = new Schema(
@@ -82,6 +93,16 @@ userSchema.methods.generateJWT = function generateJWT() {
 
 // function return infomation of logged in user
 userSchema.methods.returnAuthUser = function returnAuthUser() {
+    // const token = this.generateJWT()
+    // const cookieOptions = {
+    //     // expires: new Date(
+    //     //     Date.now() + 90 * 24 * 60 * 60 * 1000 // 90 days
+    //     // ),
+    //     // secure: true,
+    //     httpOnly: true,
+    // }
+
+    // res.cookie('jwt', token, cookieOptions)
     return {
         _id: this._id,
         name: this.name,
