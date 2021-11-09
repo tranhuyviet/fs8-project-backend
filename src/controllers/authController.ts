@@ -38,11 +38,11 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
 
         // CHECK AUTH PASS -> GRANT ACCESS TO PROTECTED ROUTE
         req.user = user
-        res.locals.user = user
+        // res.locals.user = user
         next()
     } catch (error) {
         if (error instanceof Error && error.name == 'InvalidTokenError') {
-            next(new BadRequestError('Token Error', error))
+            next(new BadRequestError('Invalid Token', error))
         } else {
             next(error)
         }

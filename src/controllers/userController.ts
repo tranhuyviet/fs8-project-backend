@@ -3,7 +3,11 @@ import User from '../models/userModel'
 import { signupValidate, loginValidate } from '../util/validateUser'
 import { errorParse, ErrorsObj } from '../util/errorParse'
 import { resError, resSuccess } from '../util/returnRes'
-import { BadRequestError, NotFoundError } from '../helpers/apiError'
+import {
+    BadRequestError,
+    NotFoundError,
+    InternalServerError,
+} from '../helpers/apiError'
 import userService from '../services/userService'
 
 // SIGNUP USER
@@ -114,5 +118,17 @@ export const login = async (
         } else {
             next(error)
         }
+    }
+}
+
+// LOGOUT USER
+export const logout = (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.cookie('jwt-ecommerce-website', 'loggedout', {
+            httpOnly: true,
+        })
+        return resSuccess(res)
+    } catch (error) {
+        next(new InternalServerError())
     }
 }
