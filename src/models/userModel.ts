@@ -11,7 +11,10 @@ export type UserDocument = Document & {
     password?: string
     role: string
     banned: boolean
-    passwordResetToken: string
+    tokenResetPassword: string
+    hashPassword: (password: string) => void
+    isValidPassword: (password: string) => boolean
+    returnAuthUser: () => object
 }
 
 const userSchema = new Schema(
@@ -44,7 +47,7 @@ const userSchema = new Schema(
             type: Boolean,
             default: false,
         },
-        passwordResetToken: {
+        tokenResetPassword: {
             type: String,
             default: '',
         },

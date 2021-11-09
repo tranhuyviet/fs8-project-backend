@@ -10,8 +10,12 @@ export default class ApiError extends Error {
 }
 
 export class NotFoundError extends ApiError {
-    constructor(readonly message: string = 'Not Found', source?: Error | any) {
-        super(404, message, source)
+    constructor(
+        readonly message: string = 'Not Found',
+        source?: Error | any,
+        errors?: any | null
+    ) {
+        super(404, message, source, errors)
     }
 }
 
