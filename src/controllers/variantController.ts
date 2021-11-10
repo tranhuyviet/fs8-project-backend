@@ -138,5 +138,7 @@ export const deleteVariant = async (
         await variantService.deleteVariant(variant._id)
 
         return resSuccess(res, null)
-    } catch (error) {}
+    } catch (error) {
+        next(error)
+    }
 }

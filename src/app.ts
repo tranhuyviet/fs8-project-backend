@@ -12,6 +12,7 @@ import movieRouter from './routers/movie'
 import userRoutes from './routers/userRoutes'
 import categoryRoutes from './routers/categoryRoutes'
 import variantRoutes from './routers/variantRoutes'
+import sizeRoutes from './routers/sizeRoutes'
 
 dotenv.config({ path: '.env' })
 const app = express()
@@ -31,6 +32,7 @@ app.use('/api/v1/movies', movieRouter)
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/categories', categoryRoutes)
 app.use('/api/v1/variants', variantRoutes)
+app.use('/api/v1/sizes', sizeRoutes)
 
 // Custom API error handler
 app.use(apiErrorHandler)
