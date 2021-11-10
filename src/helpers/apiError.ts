@@ -37,9 +37,10 @@ export class InternalServerError extends ApiError {
 export class UnauthorizedError extends ApiError {
     constructor(
         readonly message: string = 'Unauthorized Request',
-        source?: Error | any
+        source?: Error | any,
+        errors?: any | null
     ) {
-        super(401, message, source)
+        super(401, message, source, errors)
     }
 }
 

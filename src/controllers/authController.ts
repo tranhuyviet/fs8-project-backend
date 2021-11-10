@@ -1,4 +1,3 @@
-import { ReturnUser } from './../models/userModel'
 import { Request, Response, NextFunction } from 'express'
 import {
     UnauthorizedError,
@@ -7,8 +6,6 @@ import {
 } from '../helpers/apiError'
 import jwtDecode from 'jwt-decode'
 import userService from '../services/userService'
-
-import { assert } from 'console'
 
 const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     try {

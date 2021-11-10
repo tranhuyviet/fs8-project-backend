@@ -1,8 +1,6 @@
 import mongoose, { Document } from 'mongoose'
-import { Response } from 'express'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { JWT_COOKIE_EXPIRES_IN } from '../util/secrets'
 
 const { Schema, model, models } = mongoose
 

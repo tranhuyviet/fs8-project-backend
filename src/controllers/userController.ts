@@ -6,15 +6,15 @@ import {
     updateUserValidate,
     changePasswordValidate,
 } from '../util/validateUser'
-import { errorParse, ErrorsObj } from '../util/errorParse'
-import { resError, resSuccess } from '../util/returnRes'
+import { errorParse } from '../util/errorParse'
+import { resSuccess } from '../util/returnRes'
 import {
     BadRequestError,
     NotFoundError,
     InternalServerError,
+    UnauthorizedError,
 } from '../helpers/apiError'
 import userService from '../services/userService'
-import { ReturnUser } from '../models/userModel'
 
 // SIGNUP USER
 export const signup = async (
@@ -108,6 +108,12 @@ export const login = async (
         if (!user || !user.isValidPassword(password))
             throw new NotFoundError('Invalid credentials', null, {
                 global: 'Invalid credentials',
+            })
+
+        // check user banned (true)
+        if (user.banned)
+            throw new UnauthorizedError('Banned User', null, {
+                global: 'This user is banned. Please contact to admin',
             })
 
         // create cookie
