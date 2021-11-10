@@ -117,3 +117,26 @@ export const updateCategory = async (
         }
     }
 }
+
+// DELETE CATEGORY
+export const deleteCategory = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // checking isValid id
+        const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
+        if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+
+        // find the category
+        const category = await categoryService.findById(req.params._id)
+        if (!category)
+            throw new BadRequestError('Category not found, ID proviced invalid')
+
+        // if found category -> delete category
+        await categoryService.deleteCategory(category._id)
+
+        return resSuccess(res, null)
+    } catch (error) {}
+}

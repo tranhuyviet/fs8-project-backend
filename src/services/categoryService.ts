@@ -26,10 +26,15 @@ const updateCategory = async (
     })
 }
 
+const deleteCategory = async (_id: string): Promise<CategoryDocument> => {
+    return Category.findByIdAndDelete(_id)
+}
+
 export default {
     save,
     findByName,
     findById,
     getAllCategories,
     updateCategory,
+    deleteCategory,
 }

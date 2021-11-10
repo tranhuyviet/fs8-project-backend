@@ -3,6 +3,7 @@ import {
     createCategory,
     getAllCategories,
     updateCategory,
+    deleteCategory,
 } from '../controllers/categoryController'
 import authController from '../controllers/authController'
 
@@ -21,5 +22,7 @@ router.use(authController.checkPermission(['admin']))
 router.post('/', createCategory)
 // update category
 router.patch('/:_id', updateCategory)
+// delete category
+router.delete('/:_id', deleteCategory)
 
 export default router
