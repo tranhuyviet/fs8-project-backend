@@ -13,6 +13,9 @@ const password = Yup.string()
 const confirmPassword = Yup.string()
     .required('Confirm Password cannot be empty!')
     .oneOf([Yup.ref('password')], 'Password not match!')
+const currentPassword = Yup.string()
+    .min(6, 'Password must be at least 6 characters!')
+    .required('Password cannot be empty!')
 
 export const signupValidate = Yup.object({
     name,
@@ -29,4 +32,10 @@ export const loginValidate = Yup.object({
 export const updateUserValidate = Yup.object({
     name,
     email,
+})
+
+export const changePasswordValidate = Yup.object({
+    currentPassword,
+    password,
+    confirmPassword,
 })

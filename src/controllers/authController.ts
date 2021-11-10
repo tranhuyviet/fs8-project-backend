@@ -44,7 +44,7 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
         next()
     } catch (error) {
         if (error instanceof Error && error.name == 'InvalidTokenError') {
-            next(new BadRequestError('Invalid Token', error))
+            next(new BadRequestError('Invalid Token, login again', error))
         } else {
             next(error)
         }

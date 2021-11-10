@@ -4,6 +4,7 @@ import {
     signupValidate,
     loginValidate,
     updateUserValidate,
+    changePasswordValidate,
 } from '../util/validateUser'
 import { errorParse, ErrorsObj } from '../util/errorParse'
 import { resError, resSuccess } from '../util/returnRes'
@@ -181,6 +182,54 @@ export const updateUser = async (
             next(
                 new BadRequestError(
                     'Update User Validate Error',
+                    error,
+                    errorParse(error)
+                )
+            )
+        } else {
+            next(error)
+        }
+    }
+}
+
+// CHANGE PASSWORD
+export const changePassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // checking validate: name, email
+        await changePasswordValidate.validate(req.body, { abortEarly: false })
+
+        // check current password is correct
+        const user = await userService.findUserById(req.user as string)
+        const { currentPassword, password } = req.body
+
+        if (!user || !user.isValidPassword(currentPassword))
+            return next(
+                new BadRequestError('Bad request', null, {
+                    currentPassword: 'Current password is incorrect',
+                })
+            )
+
+        // update password
+        // hash password
+        user.hashPassword(password)
+        await userService.create(user)
+
+        // create new cookie
+        res.cookie('jwt-ecommerce-website', user.returnAuthUser().token, {
+            httpOnly: true,
+        })
+
+        // return user with authentication
+        return resSuccess(res, user.returnAuthUser())
+    } catch (error) {
+        if (error instanceof Error && error.name == 'ValidationError') {
+            next(
+                new BadRequestError(
+                    'Change Password Validate Error',
                     error,
                     errorParse(error)
                 )

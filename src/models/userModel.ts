@@ -25,6 +25,7 @@ export type UserDocument = Document & {
     tokenResetPassword: string
     hashPassword: (password: string) => void
     isValidPassword: (password: string) => boolean
+    correctPassword: (currentPass: string, inputPass: string) => boolean
     returnAuthUser: () => ReturnUser
 }
 
