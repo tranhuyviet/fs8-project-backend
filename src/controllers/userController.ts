@@ -15,6 +15,7 @@ import {
     UnauthorizedError,
 } from '../helpers/apiError'
 import userService from '../services/userService'
+import mongoose from 'mongoose'
 
 // SIGNUP USER
 export const signup = async (
@@ -269,7 +270,11 @@ export const deleteUser = async (
     next: NextFunction
 ) => {
     try {
-        // check user id is correct
+        // checking isValid id
+        const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
+        if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+
+        // if id isValid -> check user id is correct
         const user = await userService.findUserById(req.params._id)
 
         // if not found user
