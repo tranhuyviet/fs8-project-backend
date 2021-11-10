@@ -10,6 +10,7 @@ import { errorParse } from '../util/errorParse'
 import { resSuccess } from '../util/returnRes'
 import Category from '../models/categoryModel'
 import categoryService from '../services/categoryService'
+import mongoose from 'mongoose'
 
 // CREATE NEW CATEGORY
 export const createCategory = async (
@@ -65,5 +66,54 @@ export const getAllCategories = async (
         return resSuccess(res, categories)
     } catch (error) {
         next(error)
+    }
+}
+
+// UPDATE CATEGORY
+export const updateCategory = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // checking validate: name
+        await categoryValidate.validate(req.body, { abortEarly: false })
+
+        // check the name of category exist
+        const { name } = req.body
+        const isExist = await categoryService.findByName(name)
+        if (isExist)
+            throw new BadRequestError('Category name error', null, {
+                name: 'This category name is already taken',
+            })
+
+        // checking isValid id
+        const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
+        if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+
+        // if id isValid -> find category with the ID
+        const isCategory = await categoryService.findById(req.params._id)
+        if (!isCategory)
+            throw new BadRequestError('Category not found, ID proviced invalid')
+
+        // update category
+        const category = await categoryService.updateCategory(req.params._id, {
+            name,
+        })
+
+        // return category
+        return resSuccess(res, category)
+    } catch (error) {
+        if (error instanceof Error && error.name == 'ValidationError') {
+            next(
+                new BadRequestError(
+                    'Update Category Validate Error',
+                    error,
+                    errorParse(error)
+                )
+            )
+        } else {
+            next(error)
+        }
     }
 }
