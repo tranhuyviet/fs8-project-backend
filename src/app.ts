@@ -8,7 +8,6 @@ import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 
 // Import routes
-import movieRouter from './routers/movie'
 import userRoutes from './routers/userRoutes'
 import categoryRoutes from './routers/categoryRoutes'
 import variantRoutes from './routers/variantRoutes'
@@ -28,7 +27,6 @@ app.use(lusca.xframe('SAMEORIGIN'))
 app.use(lusca.xssProtection(true))
 
 // ROUTES
-app.use('/api/v1/movies', movieRouter)
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/categories', categoryRoutes)
 app.use('/api/v1/variants', variantRoutes)
