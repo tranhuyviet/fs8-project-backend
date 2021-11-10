@@ -1,8 +1,10 @@
+import { ReturnUser } from './../models/userModel'
 import { Request, Response, NextFunction } from 'express'
 import { UnauthorizedError, BadRequestError } from '../helpers/apiError'
 import jwtDecode from 'jwt-decode'
 import userService from '../services/userService'
-import { ReturnUser } from '../models/userModel'
+
+import { assert } from 'console'
 
 const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -38,8 +40,7 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
             )
 
         // CHECK AUTH PASS -> GRANT ACCESS TO PROTECTED ROUTE
-
-        req.user = user._id
+        req.user = user
 
         next()
     } catch (error) {

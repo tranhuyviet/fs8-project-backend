@@ -14,6 +14,7 @@ import {
     InternalServerError,
 } from '../helpers/apiError'
 import userService from '../services/userService'
+import { ReturnUser } from '../models/userModel'
 
 // SIGNUP USER
 export const signup = async (
@@ -152,30 +153,43 @@ export const updateUser = async (
     try {
         // checking validate: name, email
         // image can be empty
-        await updateUserValidate.validate(req.body, { abortEarly: false })
-
+        type Variables = {
+            name?: string
+            email?: string
+            image?: string
+        }
+        const variables: Variables = {}
         const { name, email, image } = req.body
 
-        // check email is exist
-        const isExistEmail = await userService.findUserByEmail(email)
+        if (name) variables.name = name
+        if (email) variables.email = email
+        if (image) variables.image = image
 
-        // if email entered is exist in database
-        if (isExistEmail) {
-            throw new BadRequestError(
-                'Update User Validate Email Error',
-                null,
-                {
-                    email: 'This email is already taken',
-                }
-            )
+        await updateUserValidate.validate(req.body, { abortEarly: false })
+
+        const userLoggedIn = req.user as any
+        // checke change email or not
+        if (email !== userLoggedIn.email) {
+            // user changed the email (entered another email)
+            // check email is exist
+            const isExistEmail = await userService.findUserByEmail(email)
+
+            // if email entered is exist in database
+            if (isExistEmail) {
+                throw new BadRequestError(
+                    'Update User Validate Email Error',
+                    null,
+                    {
+                        email: 'This email is already taken',
+                    }
+                )
+            }
+        } else {
+            // user not change the email
+            delete variables.email
         }
 
-        // update user
-        const variables: object = image
-            ? { name, email, image }
-            : { name, email }
-
-        const user = await userService.updateUser(req.user as string, variables)
+        const user = await userService.updateUser(userLoggedIn._id, variables)
         return resSuccess(res, user)
     } catch (error) {
         if (error instanceof Error && error.name == 'ValidationError') {
@@ -203,7 +217,9 @@ export const changePassword = async (
         await changePasswordValidate.validate(req.body, { abortEarly: false })
 
         // check current password is correct
-        const user = await userService.findUserById(req.user as string)
+        const userLoggedIn = req.user as any
+
+        const user = await userService.findUserById(userLoggedIn._id)
         const { currentPassword, password } = req.body
 
         if (!user || !user.isValidPassword(currentPassword))
