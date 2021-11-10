@@ -11,6 +11,7 @@ import apiContentType from './middlewares/apiContentType'
 import movieRouter from './routers/movie'
 import userRoutes from './routers/userRoutes'
 import categoryRoutes from './routers/categoryRoutes'
+import variantRoutes from './routers/variantRoutes'
 
 dotenv.config({ path: '.env' })
 const app = express()
@@ -29,6 +30,7 @@ app.use(lusca.xssProtection(true))
 app.use('/api/v1/movies', movieRouter)
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/categories', categoryRoutes)
+app.use('/api/v1/variants', variantRoutes)
 
 // Custom API error handler
 app.use(apiErrorHandler)
