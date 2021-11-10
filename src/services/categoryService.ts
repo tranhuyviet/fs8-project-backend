@@ -8,7 +8,12 @@ const findByName = async (name: string): Promise<CategoryDocument> => {
     return Category.findOne({ name })
 }
 
+const getAllCategories = async (): Promise<CategoryDocument[]> => {
+    return Category.find({})
+}
+
 export default {
     save,
     findByName,
+    getAllCategories,
 }

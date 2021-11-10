@@ -51,3 +51,19 @@ export const createCategory = async (
         }
     }
 }
+
+// GET ALL CATEGORIES
+export const getAllCategories = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const categories = await categoryService.getAllCategories()
+        if (!categories) throw new NotFoundError('Not found any categories')
+
+        return resSuccess(res, categories)
+    } catch (error) {
+        next(error)
+    }
+}

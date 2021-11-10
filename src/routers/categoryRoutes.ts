@@ -1,8 +1,14 @@
 import { Router } from 'express'
-import { createCategory } from '../controllers/categoryController'
+import {
+    createCategory,
+    getAllCategories,
+} from '../controllers/categoryController'
 import authController from '../controllers/authController'
 
 const router = Router()
+
+// not require loggin (guest user)
+router.get('/', getAllCategories)
 
 // require protected route: authentication
 router.use(authController.checkAuth)
