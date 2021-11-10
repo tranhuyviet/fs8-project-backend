@@ -47,7 +47,7 @@ export const signup = async (
         user.hashPassword(password)
 
         // save user
-        await userService.create(user)
+        await userService.save(user)
 
         // create cookie
         res.cookie('jwt-ecommerce-website', user.returnAuthUser().token, {
@@ -232,7 +232,7 @@ export const changePassword = async (
         // update password
         // hash password
         user.hashPassword(password)
-        await userService.create(user)
+        await userService.save(user)
 
         // create new cookie
         res.cookie('jwt-ecommerce-website', user.returnAuthUser().token, {
@@ -276,6 +276,34 @@ export const deleteUser = async (
         await userService.deleteUser(user._id)
         return resSuccess(res, null)
     } catch (error) {
-        console.log(error)
+        next(error)
+    }
+}
+
+// BAN USER
+export const toggleBannedUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // find the user
+        const user = await userService.findUserById(req.params._id)
+
+        // if not found user
+        if (!user)
+            return next(
+                new BadRequestError('Bad request - user id is incorrect')
+            )
+
+        // toggle banner
+        user.banned = !user.banned
+
+        // save the changed
+        await userService.save(user)
+
+        return resSuccess(res, user.returnUser())
+    } catch (error) {
+        next(error)
     }
 }

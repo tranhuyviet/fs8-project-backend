@@ -7,6 +7,7 @@ import {
     updateUser,
     changePassword,
     deleteUser,
+    toggleBannedUser,
 } from '../controllers/userController'
 import authController from '../controllers/authController'
 
@@ -25,5 +26,6 @@ router.get('/logout', logout)
 // require admin permission
 router.use(authController.checkPermission(['admin']))
 router.delete('/:_id', deleteUser)
+router.get('/toggle-banned-user/:_id', toggleBannedUser)
 
 export default router

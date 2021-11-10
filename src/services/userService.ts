@@ -1,6 +1,6 @@
 import User, { UserDocument } from '../models/userModel'
 
-const create = async (user: UserDocument): Promise<UserDocument> => {
+const save = async (user: UserDocument): Promise<UserDocument> => {
     return user.save()
 }
 
@@ -31,7 +31,7 @@ const deleteUser = async (_id: string): Promise<UserDocument> => {
 }
 
 export default {
-    create,
+    save,
     getAllUsers,
     findUserByEmail,
     findUserById,

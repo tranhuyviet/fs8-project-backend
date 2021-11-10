@@ -12,7 +12,10 @@ export interface ReturnUser {
     email: string
     image?: string
     role: string
+    banned: boolean
     token?: string
+    createdAt?: string
+    updatedAt?: string
 }
 
 export type UserDocument = Document & {
@@ -23,10 +26,13 @@ export type UserDocument = Document & {
     role: string
     banned: boolean
     tokenResetPassword: string
+    createdAt: string
+    updatedAt: string
     hashPassword: (password: string) => void
     isValidPassword: (password: string) => boolean
     correctPassword: (currentPass: string, inputPass: string) => boolean
     returnAuthUser: () => ReturnUser
+    returnUser: () => ReturnUser
 }
 
 const userSchema = new Schema(
@@ -101,7 +107,21 @@ userSchema.methods.returnAuthUser = function returnAuthUser() {
         email: this.email,
         image: this.image,
         role: this.role,
+        banned: this.banned,
         token: this.generateJWT(),
+    }
+}
+
+// this function will return infomation of user, remove password and some infomation no need to return
+userSchema.methods.returnUser = function returnUser(): ReturnUser {
+    return {
+        _id: this._id,
+        name: this.name,
+        email: this.email,
+        image: this.image,
+        role: this.role,
+        banned: this.banned,
+        updatedAt: this.updatedAt,
     }
 }
 
