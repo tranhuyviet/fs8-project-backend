@@ -1,6 +1,10 @@
 import { ReturnUser } from './../models/userModel'
 import { Request, Response, NextFunction } from 'express'
-import { UnauthorizedError, BadRequestError } from '../helpers/apiError'
+import {
+    UnauthorizedError,
+    BadRequestError,
+    ForbiddenError,
+} from '../helpers/apiError'
 import jwtDecode from 'jwt-decode'
 import userService from '../services/userService'
 
@@ -52,6 +56,26 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+// this function will check the roles of user ['admin','user']
+// parameter roles is array, item in roles will pass this function and move on by next()
+// item not in role can not pass and move on Error handler (that mean can not move on controller)
+// roles is array because in the future may be have more roles, ex 'parner','seller',...
+const checkPermission = (roles: string[]) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        const userLoggedIn = req.user as any
+
+        if (!roles.includes(userLoggedIn.role))
+            return next(
+                new ForbiddenError(
+                    'You do not have permission to access this feature'
+                )
+            )
+        // if have permision -> move on next
+        next()
+    }
+}
+
 export default {
     checkAuth,
+    checkPermission,
 }

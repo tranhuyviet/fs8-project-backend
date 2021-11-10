@@ -26,10 +26,15 @@ const updateUser = async (
     }).select('-password -tokenResetPassword')
 }
 
+const deleteUser = async (_id: string): Promise<UserDocument> => {
+    return User.findByIdAndDelete(_id)
+}
+
 export default {
     create,
     getAllUsers,
     findUserByEmail,
     findUserById,
     updateUser,
+    deleteUser,
 }

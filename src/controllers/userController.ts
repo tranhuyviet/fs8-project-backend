@@ -255,3 +255,27 @@ export const changePassword = async (
         }
     }
 }
+
+// DELETE USER
+export const deleteUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // check user id is correct
+        const user = await userService.findUserById(req.params._id)
+
+        // if not found user
+        if (!user)
+            return next(
+                new BadRequestError('Bad request - user id is incorrect')
+            )
+
+        // if user id correct -> proceed to delete the user
+        await userService.deleteUser(user._id)
+        return resSuccess(res, null)
+    } catch (error) {
+        console.log(error)
+    }
+}

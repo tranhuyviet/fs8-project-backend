@@ -6,6 +6,7 @@ import {
     logout,
     updateUser,
     changePassword,
+    deleteUser,
 } from '../controllers/userController'
 import authController from '../controllers/authController'
 
@@ -20,5 +21,9 @@ router.patch('/', updateUser)
 router.patch('/change-password', changePassword)
 router.get('/', getAllUsers)
 router.get('/logout', logout)
+
+// require admin permission
+router.use(authController.checkPermission(['admin']))
+router.delete('/:_id', deleteUser)
 
 export default router
