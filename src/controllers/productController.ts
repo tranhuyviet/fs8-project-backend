@@ -209,3 +209,28 @@ export const getProductById = async (
         next(error)
     }
 }
+
+// DELETE PRODUCT
+export const deleteProduct = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // checking isValid id
+        const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
+        if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+
+        // find the product
+        const product = await productService.findById(req.params._id)
+        if (!product)
+            throw new BadRequestError('Product not found, ID proviced invalid')
+
+        // if found the product -> delete product
+        await productService.deleteProduct(product._id)
+
+        return resSuccess(res, null)
+    } catch (error) {
+        next(error)
+    }
+}

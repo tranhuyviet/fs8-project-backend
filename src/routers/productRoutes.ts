@@ -3,6 +3,7 @@ import {
     createProduct,
     getAllProducts,
     getProductById,
+    deleteProduct,
 } from '../controllers/productController'
 import authController from '../controllers/authController'
 
@@ -23,5 +24,5 @@ router.post('/', createProduct)
 // update product
 
 // delete product
-
+router.delete('/:_id', deleteProduct)
 export default router

@@ -12,8 +12,13 @@ const findById = async (_id: string): Promise<ProductDocument> => {
     return Product.findById(_id)
 }
 
+const deleteProduct = async (_id: string): Promise<ProductDocument> => {
+    return Product.findByIdAndDelete(_id)
+}
+
 export default {
     save,
     getAllProducts,
     findById,
+    deleteProduct,
 }
