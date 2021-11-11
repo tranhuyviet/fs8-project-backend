@@ -138,5 +138,7 @@ export const deleteCategory = async (
         await categoryService.deleteCategory(category._id)
 
         return resSuccess(res, null)
-    } catch (error) {}
+    } catch (error) {
+        next(error)
+    }
 }

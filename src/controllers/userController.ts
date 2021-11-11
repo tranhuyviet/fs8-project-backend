@@ -298,6 +298,10 @@ export const toggleBannedUser = async (
     next: NextFunction
 ) => {
     try {
+        // checking isValid id
+        const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
+        if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+
         // find the user
         const user = await userService.findUserById(req.params._id)
 

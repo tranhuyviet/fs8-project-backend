@@ -7,6 +7,7 @@ import {
 import jwtDecode from 'jwt-decode'
 import userService from '../services/userService'
 
+// protected route: checking authentication
 const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Getting token and check of it's there
