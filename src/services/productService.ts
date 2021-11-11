@@ -4,11 +4,30 @@ const save = async (product: ProductDocument): Promise<ProductDocument> => {
     return product.save()
 }
 
+type Query = {
+    name?: string
+}
+
 const getAllProducts = async (
     skip: number,
-    limit: number
+    limit: number,
+    name: string
 ): Promise<ProductDocument[]> => {
-    return Product.find({}).skip(skip).limit(limit)
+    let query: any = {}
+
+    if (name && name !== 'undefined') {
+        const rtName: any = []
+        const splitName = name.split(' ')
+        for (const name of splitName) {
+            rtName.push({ name: { $regex: `.*${name}.*`, $options: 'i' } })
+        }
+        if (rtName.length > 0) {
+            query = { $and: rtName }
+        }
+    }
+
+    console.log('query: ', query)
+    return Product.find(query).skip(skip).limit(limit)
 }
 
 // calculate total number of products

@@ -190,6 +190,10 @@ export const getAllProducts = async (
     next: NextFunction
 ) => {
     try {
+        // handle search by name of product
+        const name: string = String(req.query.name) || ''
+
+        // handle pagination
         const page: number = Number(req.query.page) || 1
         const limit: number = Number(req.query.limit) || 10
         const skip: number = (page - 1) * limit
@@ -197,9 +201,14 @@ export const getAllProducts = async (
         // caculate total number of products
         const total: number = await productService.total()
 
-        const products = await productService.getAllProducts(skip, limit)
-
+        // get products
+        const products = await productService.getAllProducts(skip, limit, name)
         if (!products) throw new NotFoundError('Not found any products')
+
+        // populate
+        for (const product of products) {
+            await productPopulate(product)
+        }
 
         // return resSuccess(res, products)
         return res.status(200).json({
