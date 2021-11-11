@@ -1,3 +1,4 @@
+import { CategoryDocument } from './../models/categoryModel'
 import { Request, Response, NextFunction } from 'express'
 import { categoryValidate } from '../util/validateCategory'
 import {
@@ -23,7 +24,10 @@ export const createCategory = async (
         await categoryValidate.validate(req.body, { abortEarly: false })
 
         // check the name of category exist
-        const { name } = req.body
+        const variables: CategoryDocument = req.body as CategoryDocument
+
+        const { name } = variables
+
         const isExist = await categoryService.findByName(name)
         if (isExist)
             throw new BadRequestError('Category name error', null, {
@@ -80,7 +84,9 @@ export const updateCategory = async (
         await categoryValidate.validate(req.body, { abortEarly: false })
 
         // check the name of category exist
-        const { name } = req.body
+        const variables: CategoryDocument = req.body as CategoryDocument
+        const { name } = variables
+
         const isExist = await categoryService.findByName(name)
         if (isExist)
             throw new BadRequestError('Category name error', null, {
@@ -97,9 +103,10 @@ export const updateCategory = async (
             throw new BadRequestError('Category not found, ID proviced invalid')
 
         // update category
-        const category = await categoryService.updateCategory(req.params._id, {
-            name,
-        })
+        const category = await categoryService.updateCategory(
+            req.params._id,
+            variables
+        )
 
         // return category
         return resSuccess(res, category)

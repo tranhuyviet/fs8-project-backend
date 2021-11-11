@@ -178,6 +178,11 @@ export const createProduct = async (
     }
 }
 
+type Pagination = {
+    page: number
+    limit: number
+}
+
 // GET All PRODUCTS
 export const getAllProducts = async (
     req: Request,
@@ -185,10 +190,23 @@ export const getAllProducts = async (
     next: NextFunction
 ) => {
     try {
-        const products = await productService.getAllProducts()
+        const page: number = Number(req.query.page) || 1
+        const limit: number = Number(req.query.limit) || 10
+        const skip: number = (page - 1) * limit
+
+        // caculate total number of products
+        const total: number = await productService.total()
+
+        const products = await productService.getAllProducts(skip, limit)
+
         if (!products) throw new NotFoundError('Not found any products')
 
-        return resSuccess(res, products)
+        // return resSuccess(res, products)
+        return res.status(200).json({
+            status: 'success',
+            total,
+            data: products,
+        })
     } catch (error) {
         next(error)
     }

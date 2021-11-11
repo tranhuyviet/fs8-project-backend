@@ -8,7 +8,7 @@ import {
 } from '../helpers/apiError'
 import { errorParse } from '../util/errorParse'
 import { resSuccess } from '../util/returnRes'
-import Size from '../models/sizeModel'
+import Size, { SizeDocument } from '../models/sizeModel'
 import sizeService from '../services/sizeService'
 import mongoose from 'mongoose'
 
@@ -80,7 +80,8 @@ export const updateSize = async (
         await sizeValidate.validate(req.body, { abortEarly: false })
 
         // check the name of size exist
-        const { name } = req.body
+        const variables: SizeDocument = req.body as SizeDocument
+        const { name } = variables
         const isExist = await sizeService.findByName(name)
         if (isExist)
             throw new BadRequestError('Size name error', null, {
@@ -97,9 +98,7 @@ export const updateSize = async (
             throw new BadRequestError('Size not found, ID proviced invalid')
 
         // update size
-        const size = await sizeService.updateSize(req.params._id, {
-            name,
-        })
+        const size = await sizeService.updateSize(req.params._id, variables)
 
         // return size
         return resSuccess(res, size)

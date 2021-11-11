@@ -8,7 +8,7 @@ import {
 } from '../helpers/apiError'
 import { errorParse } from '../util/errorParse'
 import { resSuccess } from '../util/returnRes'
-import Variant from '../models/variantModel'
+import Variant, { VariantDocument } from '../models/variantModel'
 import variantService from '../services/variantService'
 import mongoose from 'mongoose'
 
@@ -80,7 +80,8 @@ export const updateVariant = async (
         await variantValidate.validate(req.body, { abortEarly: false })
 
         // check the name of variant exist
-        const { name } = req.body
+        const variables: VariantDocument = req.body as VariantDocument
+        const { name } = variables
         const isExist = await variantService.findByName(name)
         if (isExist)
             throw new BadRequestError('Variant name error', null, {
@@ -97,9 +98,10 @@ export const updateVariant = async (
             throw new BadRequestError('Variant not found, ID proviced invalid')
 
         // update variant
-        const variant = await variantService.updateVariant(req.params._id, {
-            name,
-        })
+        const variant = await variantService.updateVariant(
+            req.params._id,
+            variables
+        )
 
         // return variant
         return resSuccess(res, variant)

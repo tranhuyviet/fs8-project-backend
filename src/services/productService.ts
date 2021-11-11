@@ -4,8 +4,16 @@ const save = async (product: ProductDocument): Promise<ProductDocument> => {
     return product.save()
 }
 
-const getAllProducts = async (): Promise<ProductDocument[]> => {
-    return Product.find({})
+const getAllProducts = async (
+    skip: number,
+    limit: number
+): Promise<ProductDocument[]> => {
+    return Product.find({}).skip(skip).limit(limit)
+}
+
+// calculate total number of products
+const total = async (): Promise<number> => {
+    return Product.find({}).countDocuments()
 }
 
 const findById = async (_id: string): Promise<ProductDocument> => {
@@ -32,4 +40,5 @@ export default {
     findById,
     updateProduct,
     deleteProduct,
+    total,
 }
