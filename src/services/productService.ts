@@ -13,7 +13,8 @@ const getAllProducts = async (
     limit: number,
     name: string,
     category: string,
-    variant: string
+    variant: string,
+    size: string
 ): Promise<ProductDocument[]> => {
     let query: any = {}
     const arrayAND: any = []
@@ -33,11 +34,14 @@ const getAllProducts = async (
         arrayAND.push({ variants: { $eq: variant } })
     }
 
+    if (size && size !== 'undefined') {
+        arrayAND.push({ sizes: { $eq: size } })
+    }
+
     if (arrayAND.length > 0) {
         query = { $and: arrayAND }
     }
 
-    console.log('query: ', query)
     return Product.find(query).skip(skip).limit(limit)
 }
 

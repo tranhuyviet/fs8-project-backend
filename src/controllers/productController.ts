@@ -199,6 +199,9 @@ export const getAllProducts = async (
         // handle filter by variant
         const variant: string = String(req.query.variant) || ''
 
+        // handle filter by size
+        const size: string = String(req.query.size) || ''
+
         // handle pagination
         const page: number = Number(req.query.page) || 1
         const limit: number = Number(req.query.limit) || 10
@@ -213,7 +216,8 @@ export const getAllProducts = async (
             limit,
             name,
             category,
-            variant
+            variant,
+            size
         )
         if (!products) throw new NotFoundError('Not found any products')
 
