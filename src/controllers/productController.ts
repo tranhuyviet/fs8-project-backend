@@ -167,3 +167,45 @@ export const getAllProducts = async (
         next(error)
     }
 }
+
+// GET PRODUCT BY ID
+export const getProductById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        console.log(req.params._id)
+        // checking isValid id
+        const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
+        if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+
+        // find the product
+        const product = await productService.findById(req.params._id)
+        if (!product)
+            throw new BadRequestError('Product not found, ID proviced invalid')
+
+        // populate
+        await product.populate({
+            path: 'category',
+            select: 'name',
+        })
+        await product.populate({
+            path: 'user',
+            select: 'name email image',
+        })
+        await product.populate({
+            path: 'variants',
+            select: 'name',
+        })
+        await product.populate({
+            path: 'sizes',
+            select: 'name',
+        })
+
+        // return product
+        return resSuccess(res, product)
+    } catch (error) {
+        next(error)
+    }
+}

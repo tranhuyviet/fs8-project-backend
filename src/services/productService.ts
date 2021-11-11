@@ -8,7 +8,12 @@ const getAllProducts = async (): Promise<ProductDocument[]> => {
     return Product.find({})
 }
 
+const findById = async (_id: string): Promise<ProductDocument> => {
+    return Product.findById(_id)
+}
+
 export default {
     save,
     getAllProducts,
+    findById,
 }
