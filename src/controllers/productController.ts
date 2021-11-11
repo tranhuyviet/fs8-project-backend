@@ -151,3 +151,19 @@ export const createProduct = async (
         }
     }
 }
+
+// GET All PRODUCTS
+export const getAllProducts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const products = await productService.getAllProducts()
+        if (!products) throw new NotFoundError('Not found any products')
+
+        return resSuccess(res, products)
+    } catch (error) {
+        next(error)
+    }
+}

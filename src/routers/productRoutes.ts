@@ -1,10 +1,12 @@
 import { Router } from 'express'
-import { createProduct } from '../controllers/productController'
+import { createProduct, getAllProducts } from '../controllers/productController'
 import authController from '../controllers/authController'
 
 const router = Router()
 
 // NOT REQUIRE LOGGIN (GUEST USER)
+// get all products
+router.get('/', getAllProducts)
 
 // REQUIRE PROTECTED ROUTE: AUTHENTICATION
 router.use(authController.checkAuth)
