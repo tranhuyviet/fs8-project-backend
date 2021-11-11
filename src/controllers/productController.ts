@@ -18,16 +18,13 @@ import variantService from '../services/variantService'
 import sizeService from '../services/sizeService'
 import productService from '../services/productService'
 
-// CREATE NEW PRODUCT
-export const createProduct = async (
-    req: Request,
-    res: Response,
+// refactor validate product
+const validateProduct = async (
+    variables: ProductDocument,
     next: NextFunction
 ) => {
     try {
-        // console.log(req.body)
-        await createProductValidate.validate(req.body, { abortEarly: false })
-
+        await createProductValidate.validate(variables, { abortEarly: false })
         const {
             name,
             description,
@@ -38,7 +35,7 @@ export const createProduct = async (
             user,
             variants,
             sizes,
-        } = req.body as ProductDocument
+        } = variables
 
         // checking isValid id category:
         const isValidIdCategory = mongoose.Types.ObjectId.isValid(category)
@@ -117,22 +114,54 @@ export const createProduct = async (
                 })
             }
         }
+    } catch (error) {
+        throw error
+    }
+}
 
-        // AFTER CHECKING VALIDATE AND IS EXIST IN DATABASE -> CREATE NEW PRODUCT
-        const product = new Product({
-            name,
-            description,
-            price,
-            discount,
-            images,
-            category,
-            user,
-            variants,
-            sizes,
+const productPopulate = async (product: ProductDocument) => {
+    try {
+        await product.populate({
+            path: 'category',
+            select: 'name',
         })
+        await product.populate({
+            path: 'user',
+            select: 'name email image',
+        })
+        await product.populate({
+            path: 'variants',
+            select: 'name',
+        })
+        await product.populate({
+            path: 'sizes',
+            select: 'name',
+        })
+        return product
+    } catch (error) {
+        throw error
+    }
+}
+
+// CREATE NEW PRODUCT
+export const createProduct = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const variables: ProductDocument = req.body as ProductDocument
+        // validate product
+        await validateProduct(variables, next)
+
+        // after pass all validate condition -> create new product
+        const product = new Product(variables)
 
         // save product to database
         await productService.save(product)
+
+        // populate
+        await productPopulate(product)
 
         // return product
         return resSuccess(res, product)
@@ -207,6 +236,50 @@ export const getProductById = async (
         return resSuccess(res, product)
     } catch (error) {
         next(error)
+    }
+}
+
+// UPDATE PRODUCT
+export const updateProduct = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // checking isValid id
+        const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
+        if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+
+        // find the product
+        const existProduct = await productService.findById(req.params._id)
+        if (!existProduct)
+            throw new BadRequestError('Product not found, ID proviced invalid')
+
+        const variables: ProductDocument = req.body as ProductDocument
+        await validateProduct(variables, next)
+
+        // after pass all validate condition -> update product
+        const product = await productService.updateProduct(
+            existProduct._id,
+            variables
+        )
+
+        // populate
+        await productPopulate(product)
+        // return product
+        return resSuccess(res, product)
+    } catch (error) {
+        if (error instanceof Error && error.name == 'ValidationError') {
+            next(
+                new BadRequestError(
+                    'Update Product Validate Error',
+                    error,
+                    errorParse(error)
+                )
+            )
+        } else {
+            next(error)
+        }
     }
 }
 

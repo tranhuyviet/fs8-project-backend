@@ -10,7 +10,7 @@ const description = Yup.string()
     .required('Description cannot be empty!')
 const price = Yup.number()
     .required('Price cannot be empty')
-    .moreThan(0.00000000001, 'Price have to be positive!')
+    .moreThan(0.00000000001, 'Price have to be positive and greater than 0')
 const discount = Yup.number().moreThan(
     -0.00000000001,
     'Discount have to be positive!'
