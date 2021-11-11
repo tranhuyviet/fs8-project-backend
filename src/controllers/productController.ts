@@ -193,8 +193,11 @@ export const getAllProducts = async (
         // handle search by name of product
         const name: string = String(req.query.name) || ''
 
-        // handle search by category
+        // handle filter by category
         const category: string = String(req.query.category) || ''
+
+        // handle filter by variant
+        const variant: string = String(req.query.variant) || ''
 
         // handle pagination
         const page: number = Number(req.query.page) || 1
@@ -209,7 +212,8 @@ export const getAllProducts = async (
             skip,
             limit,
             name,
-            category
+            category,
+            variant
         )
         if (!products) throw new NotFoundError('Not found any products')
 
