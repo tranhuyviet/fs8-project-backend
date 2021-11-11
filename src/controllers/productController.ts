@@ -193,6 +193,9 @@ export const getAllProducts = async (
         // handle search by name of product
         const name: string = String(req.query.name) || ''
 
+        // handle search by category
+        const category: string = String(req.query.category) || ''
+
         // handle pagination
         const page: number = Number(req.query.page) || 1
         const limit: number = Number(req.query.limit) || 10
@@ -202,7 +205,12 @@ export const getAllProducts = async (
         const total: number = await productService.total()
 
         // get products
-        const products = await productService.getAllProducts(skip, limit, name)
+        const products = await productService.getAllProducts(
+            skip,
+            limit,
+            name,
+            category
+        )
         if (!products) throw new NotFoundError('Not found any products')
 
         // populate

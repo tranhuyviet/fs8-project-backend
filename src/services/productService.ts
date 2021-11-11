@@ -11,19 +11,25 @@ type Query = {
 const getAllProducts = async (
     skip: number,
     limit: number,
-    name: string
+    name: string,
+    category: string
 ): Promise<ProductDocument[]> => {
     let query: any = {}
+    const arrayAND: any = []
 
     if (name && name !== 'undefined') {
-        const rtName: any = []
         const splitName = name.split(' ')
         for (const name of splitName) {
-            rtName.push({ name: { $regex: `.*${name}.*`, $options: 'i' } })
+            arrayAND.push({ name: { $regex: `.*${name}.*`, $options: 'i' } })
         }
-        if (rtName.length > 0) {
-            query = { $and: rtName }
-        }
+    }
+
+    if (category && category !== 'undefined') {
+        arrayAND.push({ category: category })
+    }
+
+    if (arrayAND.length > 0) {
+        query = { $and: arrayAND }
     }
 
     console.log('query: ', query)
