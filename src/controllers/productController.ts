@@ -19,10 +19,7 @@ import sizeService from '../services/sizeService'
 import productService from '../services/productService'
 
 // refactor validate product
-const validateProduct = async (
-    variables: ProductDocument,
-    next: NextFunction
-) => {
+const validateProduct = async (variables: ProductDocument) => {
     try {
         await createProductValidate.validate(variables, { abortEarly: false })
         const {
@@ -152,7 +149,7 @@ export const createProduct = async (
     try {
         const variables: ProductDocument = req.body as ProductDocument
         // validate product
-        await validateProduct(variables, next)
+        await validateProduct(variables)
 
         // after pass all validate condition -> create new product
         const product = new Product(variables)
@@ -204,7 +201,6 @@ export const getProductById = async (
     next: NextFunction
 ) => {
     try {
-        console.log(req.params._id)
         // checking isValid id
         const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
         if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
@@ -215,22 +211,7 @@ export const getProductById = async (
             throw new BadRequestError('Product not found, ID proviced invalid')
 
         // populate
-        await product.populate({
-            path: 'category',
-            select: 'name',
-        })
-        await product.populate({
-            path: 'user',
-            select: 'name email image',
-        })
-        await product.populate({
-            path: 'variants',
-            select: 'name',
-        })
-        await product.populate({
-            path: 'sizes',
-            select: 'name',
-        })
+        await productPopulate(product)
 
         // return product
         return resSuccess(res, product)
@@ -256,7 +237,7 @@ export const updateProduct = async (
             throw new BadRequestError('Product not found, ID proviced invalid')
 
         const variables: ProductDocument = req.body as ProductDocument
-        await validateProduct(variables, next)
+        await validateProduct(variables)
 
         // after pass all validate condition -> update product
         const product = await productService.updateProduct(

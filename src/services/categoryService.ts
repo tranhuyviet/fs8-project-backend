@@ -18,7 +18,7 @@ const getAllCategories = async (): Promise<CategoryDocument[]> => {
 
 const updateCategory = async (
     _id: string,
-    variables: object
+    variables: CategoryDocument
 ): Promise<CategoryDocument> => {
     return Category.findByIdAndUpdate(_id, variables, {
         new: true,

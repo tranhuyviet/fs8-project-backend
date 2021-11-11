@@ -18,7 +18,7 @@ const getAllVariants = async (): Promise<VariantDocument[]> => {
 
 const updateVariant = async (
     _id: string,
-    variables: object
+    variables: VariantDocument
 ): Promise<VariantDocument> => {
     return Variant.findByIdAndUpdate(_id, variables, {
         new: true,

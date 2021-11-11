@@ -18,7 +18,7 @@ const getAllSizes = async (): Promise<SizeDocument[]> => {
 
 const updateSize = async (
     _id: string,
-    variables: object
+    variables: SizeDocument
 ): Promise<SizeDocument> => {
     return Size.findByIdAndUpdate(_id, variables, {
         new: true,

@@ -14,7 +14,7 @@ const findById = async (_id: string): Promise<ProductDocument> => {
 
 const updateProduct = async (
     _id: string,
-    variables: object
+    variables: ProductDocument
 ): Promise<ProductDocument> => {
     return Product.findByIdAndUpdate(_id, variables, {
         new: true,
