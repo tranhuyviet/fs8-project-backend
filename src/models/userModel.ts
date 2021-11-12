@@ -2,7 +2,7 @@ import mongoose, { Document } from 'mongoose'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
-const { Schema, model, models } = mongoose
+const { Schema, model, models, Types } = mongoose
 
 export interface ReturnUser {
     _id: string
@@ -16,6 +16,18 @@ export interface ReturnUser {
     updatedAt?: string
 }
 
+export interface Item {
+    product: string
+    quantity: number
+    payment: boolean
+    createdAt: string
+    updateAt: string
+}
+
+export interface CartItems {
+    items: Item[]
+}
+
 export type UserDocument = Document & {
     name: string
     email: string
@@ -24,6 +36,7 @@ export type UserDocument = Document & {
     role: string
     banned: boolean
     tokenResetPassword: string
+    carts: CartItems[]
     createdAt: string
     updatedAt: string
     hashPassword: (password: string) => void
@@ -68,6 +81,32 @@ const userSchema = new Schema(
             type: String,
             default: '',
         },
+        carts: [
+            new Schema(
+                {
+                    payment: {
+                        type: Boolean,
+                        default: false,
+                    },
+                    items: [
+                        new Schema(
+                            {
+                                product: {
+                                    type: Types.ObjectId,
+                                    ref: 'products',
+                                },
+                                quantity: {
+                                    type: Number,
+                                    default: 0,
+                                },
+                            },
+                            { _id: false }
+                        ),
+                    ],
+                },
+                { timestamps: true }
+            ),
+        ],
     },
     { timestamps: true }
 )

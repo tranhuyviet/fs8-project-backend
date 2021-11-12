@@ -13,6 +13,7 @@ import categoryRoutes from './routers/categoryRoutes'
 import variantRoutes from './routers/variantRoutes'
 import sizeRoutes from './routers/sizeRoutes'
 import productRoutes from './routers/productRoutes'
+import cartRoutes from './routers/cartRoutes'
 
 dotenv.config({ path: '.env' })
 const app = express()
@@ -33,6 +34,7 @@ app.use('/api/v1/categories', categoryRoutes)
 app.use('/api/v1/variants', variantRoutes)
 app.use('/api/v1/sizes', sizeRoutes)
 app.use('/api/v1/products', productRoutes)
+app.use('/api/v1/carts', cartRoutes)
 
 // Custom API error handler
 app.use(apiErrorHandler)
