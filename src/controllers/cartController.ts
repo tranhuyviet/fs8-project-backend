@@ -6,7 +6,7 @@ import {
     UnauthorizedError,
 } from '../helpers/apiError'
 import mongoose from 'mongoose'
-import { CartItems } from '../models/userModel'
+import { CartItems, Item } from '../models/userModel'
 import productService from '../services/productService'
 import userService from '../services/userService'
 import { resSuccess } from '../util/returnRes'
@@ -57,7 +57,22 @@ export const addToCart = async (
         user.carts = updatedCarts
         await userService.save(user)
 
-        return resSuccess(res, user)
+        //populate
+        await user.populate({
+            path: 'carts',
+            populate: {
+                path: 'items',
+                populate: {
+                    path: 'product',
+                    select: 'name price discount',
+                },
+            },
+        })
+
+        // find the cart have just save (payment = false)
+        const returnCart = user.carts.find((cart) => cart.payment === false)
+
+        return resSuccess(res, returnCart)
     } catch (error) {
         next(error)
     }
@@ -83,6 +98,42 @@ export const clearCart = async (
         await userService.save(user)
 
         return resSuccess(res, null)
+    } catch (error) {
+        next(error)
+    }
+}
+
+// PAYMENT THE CART
+export const paymentCart = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // checking isValid id
+        const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
+        if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+
+        // get the user carts (logged in user)
+        const userLoggedIn = req.user as any
+        const user = await userService.findUserById(userLoggedIn._id)
+        const carts = [...user.carts]
+
+        carts.map((cart) => {
+            // check payment = false and cart id is correct -> set payment = true
+            if (
+                cart.payment === false &&
+                cart._id.toString() === req.params._id.toString()
+            ) {
+                cart.payment = true
+            }
+            return cart
+        })
+
+        user.carts = carts
+        await userService.save(user)
+
+        return resSuccess(res, user.carts)
     } catch (error) {
         next(error)
     }

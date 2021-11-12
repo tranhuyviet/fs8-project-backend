@@ -16,12 +16,13 @@ export interface ReturnUser {
     updatedAt?: string
 }
 
-export interface Item {
+export type Item = Document & {
     product: string
     quantity: number
 }
 
-export interface CartItems {
+export type CartItems = Document & {
+    _id: string
     payment: boolean
     items: Item[]
     createdAt: string
