@@ -10,7 +10,8 @@ import { CartItems } from '../models/userModel'
 import productService from '../services/productService'
 import userService from '../services/userService'
 import { resSuccess } from '../util/returnRes'
-// ADD TO CART
+
+// ADD TO CART AND UPDATE ITEMS CART (OVERWRIDE WITH CART PAYMENT = FALSE)
 export const addToCart = async (
     req: Request,
     res: Response,
@@ -45,12 +46,43 @@ export const addToCart = async (
         // update cart to user
         const userLoggedIn = req.user as any
         const user = await userService.findUserById(userLoggedIn._id)
-        const carts = [...user.carts]
+        let carts = [...user.carts]
+
+        // find the cart payment = true and copy it
+        carts = carts.filter((cart) => cart.payment === true)
+
+        // only have one cart with payment = false
+        // overwrite the cart with payment = false
         const updatedCarts = [...carts, cartItems]
         user.carts = updatedCarts
         await userService.save(user)
 
         return resSuccess(res, user)
+    } catch (error) {
+        next(error)
+    }
+}
+
+// CLEAR CART (DELETE CART - ONLY DELETE CART WITH PAYMENT = FALSE)
+export const clearCart = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // get the user carts (logged in user)
+        const userLoggedIn = req.user as any
+        const user = await userService.findUserById(userLoggedIn._id)
+        let carts = [...user.carts]
+
+        // find the cart payment = true and copy it
+        carts = carts.filter((cart) => cart.payment === true)
+
+        // clear cart that mean remove cart with payment = false, only keep carts payment = true
+        user.carts = carts
+        await userService.save(user)
+
+        return resSuccess(res, null)
     } catch (error) {
         next(error)
     }
