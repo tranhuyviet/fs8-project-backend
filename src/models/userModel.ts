@@ -19,13 +19,13 @@ export interface ReturnUser {
 export interface Item {
     product: string
     quantity: number
-    payment: boolean
-    createdAt: string
-    updateAt: string
 }
 
 export interface CartItems {
+    payment: boolean
     items: Item[]
+    createdAt: string
+    updatedAt: string
 }
 
 export type UserDocument = Document & {

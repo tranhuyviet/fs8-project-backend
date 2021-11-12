@@ -17,34 +17,36 @@ export const addToCart = async (
     next: NextFunction
 ) => {
     try {
-        console.log(req.body)
         const cartItems: CartItems = req.body as CartItems
-        console.log('ITEMS: ', cartItems)
 
-        // // checking isValid id
-        // const isCorrectId = mongoose.Types.ObjectId.isValid(product)
-        // if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+        // checking isValid ids
+        for (const item of cartItems.items) {
+            const isCorrectId = mongoose.Types.ObjectId.isValid(item.product)
+            if (!isCorrectId) throw new BadRequestError('ID proviced invalid')
+        }
 
-        // // check product exist
-        // const isExistProduct = await productService.findById(product)
-        // if (!isExistProduct)
-        //     throw new BadRequestError('Error Input', null, {
-        //         product: 'Not found the product with the ID',
-        //     })
+        // check product exist
+        for (const item of cartItems.items) {
+            const isExistProduct = await productService.findById(item.product)
+            if (!isExistProduct)
+                throw new BadRequestError('Error Input', null, {
+                    product: 'Not found the product with the ID',
+                })
+        }
 
-        // // check quantity is integer and > 0
-        // if (!(Number.isInteger(quantity) && quantity > 0))
-        //     throw new BadRequestError('Error Input', null, {
-        //         quantity: 'Quantity have to be integer and greater than 0',
-        //     })
+        // check quantity is integer and > 0
+        for (const item of cartItems.items) {
+            if (!(Number.isInteger(item.quantity) && item.quantity > 0))
+                throw new BadRequestError('Error Input', null, {
+                    quantity: 'Quantity have to be integer and greater than 0',
+                })
+        }
 
         // update cart to user
         const userLoggedIn = req.user as any
         const user = await userService.findUserById(userLoggedIn._id)
         const carts = [...user.carts]
-        const newCart = cartItems
-        const updatedCarts = [...carts, newCart]
-        console.log(updatedCarts)
+        const updatedCarts = [...carts, cartItems]
         user.carts = updatedCarts
         await userService.save(user)
 
