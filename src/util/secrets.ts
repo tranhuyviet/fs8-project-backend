@@ -16,6 +16,12 @@ if (fs.existsSync('.env')) {
 export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
 
+// EMAIL
+export const EMAIL_HOST = process.env['EMAIL_HOST']
+export const EMAIL_PORT = process.env['EMAIL_PORT']
+export const EMAIL_USER = process.env['EMAIL_USER']
+export const EMAIL_PASS = process.env['EMAIL_PASS']
+
 export const PORT = process.env['PORT']
 export const JWT_COOKIE_EXPIRES_IN = process.env['JWT_COOKIE_EXPIRES_IN']
 export const JWT_SECRET = process.env['JWT_SECRET'] as string

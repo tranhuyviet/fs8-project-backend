@@ -5,6 +5,8 @@ import {
     loginValidate,
     updateUserValidate,
     changePasswordValidate,
+    forgotPasswordValidate,
+    resetPasswordValidate,
 } from '../util/validateUser'
 import { errorParse } from '../util/errorParse'
 import { resSuccess } from '../util/returnRes'
@@ -16,6 +18,8 @@ import {
 } from '../helpers/apiError'
 import userService from '../services/userService'
 import mongoose from 'mongoose'
+import { sendEmail } from '../util/mailer'
+import crypto from 'crypto'
 
 // SIGNUP USER
 export const signup = async (
@@ -320,5 +324,104 @@ export const toggleBannedUser = async (
         return resSuccess(res, user.returnUser())
     } catch (error) {
         next(error)
+    }
+}
+
+// FORGOT PASSWORD
+export const forgotPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // checking validate: email
+        await forgotPasswordValidate.validate(req.body, { abortEarly: false })
+
+        // get user base on email
+        const { email } = req.body
+        const user = await userService.findUserByEmail(email)
+        if (!user)
+            throw new BadRequestError('Email is not available', null, {
+                email: 'Email is not available, please enter correct email',
+            })
+
+        // create token reset password
+        const resetToken = user.createTokenResetPassword()
+        await userService.save(user)
+
+        const resetUrl = `http://localhost:5001/api/v1/users/reset-password/${resetToken}`
+
+        // sent the email
+        try {
+            sendEmail(email, resetUrl)
+        } catch (error) {
+            console.log('BBBB', error)
+            throw new Error('Send email error')
+        }
+
+        res.status(200).json({
+            status: 'success',
+            message:
+                'Token sent to email! Please check your email to reset password',
+        })
+    } catch (error) {
+        if (error instanceof Error && error.name == 'ValidationError') {
+            next(
+                new BadRequestError(
+                    'Forgot Password Validate Error',
+                    error,
+                    errorParse(error)
+                )
+            )
+        } else {
+            next(error)
+        }
+    }
+}
+
+// RESET PASSWORD
+export const resetPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // Get user based on the token
+        const hashedToken = crypto
+            .createHash('sha256')
+            .update(req.params.token)
+            .digest('hex')
+
+        // console.log(hashedToken)
+
+        // find user with have the token
+        const user = await userService.findUserByTokenResetPassword(hashedToken)
+
+        if (!user)
+            throw new BadRequestError(
+                'Can not find the user, token reset password is invalid'
+            )
+
+        // validate password and confirmPassword
+        await resetPasswordValidate.validate(req.body, { abortEarly: false })
+
+        user.hashPassword(req.body.password)
+        user.tokenResetPassword = ''
+
+        await userService.save(user)
+
+        return resSuccess(res, null)
+    } catch (error) {
+        if (error instanceof Error && error.name == 'ValidationError') {
+            next(
+                new BadRequestError(
+                    'Reset Password Validate Error',
+                    error,
+                    errorParse(error)
+                )
+            )
+        } else {
+            next(error)
+        }
     }
 }

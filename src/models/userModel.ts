@@ -1,6 +1,7 @@
 import mongoose, { Document } from 'mongoose'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 
 const { Schema, model, models, Types } = mongoose
 
@@ -45,6 +46,7 @@ export type UserDocument = Document & {
     correctPassword: (currentPass: string, inputPass: string) => boolean
     returnAuthUser: () => ReturnUser
     returnUser: () => ReturnUser
+    createTokenResetPassword: () => string
 }
 
 const userSchema = new Schema(
@@ -162,6 +164,19 @@ userSchema.methods.returnUser = function returnUser(): ReturnUser {
         updatedAt: this.updatedAt,
     }
 }
+
+// create token reset password
+userSchema.methods.createTokenResetPassword =
+    function createTokenResetPassword() {
+        const resetToken = crypto.randomBytes(32).toString('hex')
+
+        this.tokenResetPassword = crypto
+            .createHash('sha256')
+            .update(resetToken)
+            .digest('hex')
+
+        return resetToken
+    }
 
 const User = models.users || model<UserDocument>('users', userSchema)
 

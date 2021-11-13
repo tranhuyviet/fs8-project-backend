@@ -16,6 +16,12 @@ const findUserById = async (_id: string): Promise<UserDocument> => {
     return User.findById(_id)
 }
 
+const findUserByTokenResetPassword = async (
+    token: string
+): Promise<UserDocument> => {
+    return User.findOne({ tokenResetPassword: token })
+}
+
 const updateUser = async (
     _id: string,
     variables: object
@@ -37,4 +43,5 @@ export default {
     findUserById,
     updateUser,
     deleteUser,
+    findUserByTokenResetPassword,
 }

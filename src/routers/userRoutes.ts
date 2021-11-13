@@ -8,6 +8,8 @@ import {
     changePassword,
     deleteUser,
     toggleBannedUser,
+    forgotPassword,
+    resetPassword,
 } from '../controllers/userController'
 import authController from '../controllers/authController'
 
@@ -15,6 +17,8 @@ const router = Router()
 
 router.post('/signup', signup)
 router.post('/login', login)
+router.post('/forgot-password', forgotPassword)
+router.patch('/reset-password/:token', resetPassword)
 
 // require protected route: authentication
 router.use(authController.checkAuth)

@@ -39,3 +39,12 @@ export const changePasswordValidate = Yup.object({
     password,
     confirmPassword,
 })
+
+export const forgotPasswordValidate = Yup.object({
+    email,
+})
+
+export const resetPasswordValidate = Yup.object({
+    password,
+    confirmPassword,
+})
