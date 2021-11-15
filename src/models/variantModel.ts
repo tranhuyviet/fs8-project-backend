@@ -4,12 +4,16 @@ const { Schema, model, models } = mongoose
 
 export type VariantDocument = Document & {
     name: string
+    colorHex: string
 }
 
 const variantSchema = new Schema({
     name: {
         type: String,
         unique: true,
+    },
+    colorHex: {
+        type: String,
     },
 })
 

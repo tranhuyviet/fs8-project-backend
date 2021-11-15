@@ -3,6 +3,7 @@ import lusca from 'lusca'
 import dotenv from 'dotenv'
 import compression from 'compression'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
@@ -27,6 +28,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(lusca.xframe('SAMEORIGIN'))
 app.use(lusca.xssProtection(true))
+app.use(cors())
 
 // ROUTES
 app.use('/api/v1/users', userRoutes)

@@ -19,11 +19,11 @@ export const createVariant = async (
     next: NextFunction
 ) => {
     try {
-        // checking validate: name
+        // checking validate: name, colorHex
         await variantValidate.validate(req.body, { abortEarly: false })
 
         // check the name of variant exist
-        const { name } = req.body
+        const { name, colorHex } = req.body
         const isExist = await variantService.findByName(name)
         if (isExist)
             throw new BadRequestError('Variant name error', null, {
@@ -31,7 +31,7 @@ export const createVariant = async (
             })
 
         // create new variant
-        const variant = new Variant({ name })
+        const variant = new Variant({ name, colorHex })
 
         // save variant to db
         await variantService.save(variant)
@@ -76,17 +76,12 @@ export const updateVariant = async (
     next: NextFunction
 ) => {
     try {
-        // checking validate: name
+        // checking validate: name, color
         await variantValidate.validate(req.body, { abortEarly: false })
 
         // check the name of variant exist
         const variables: VariantDocument = req.body as VariantDocument
         const { name } = variables
-        const isExist = await variantService.findByName(name)
-        if (isExist)
-            throw new BadRequestError('Variant name error', null, {
-                name: 'This variant name is already taken',
-            })
 
         // checking isValid id
         const isCorrectId = mongoose.Types.ObjectId.isValid(req.params._id)
@@ -96,6 +91,16 @@ export const updateVariant = async (
         const isVariant = await variantService.findById(req.params._id)
         if (!isVariant)
             throw new BadRequestError('Variant not found, ID proviced invalid')
+
+        // check name change or not
+        if (name !== isVariant.name) {
+            // if the name changed, check with another name
+            const isExist = await variantService.findByName(name)
+            if (isExist)
+                throw new BadRequestError('Variant name error', null, {
+                    name: 'This variant name is already taken',
+                })
+        }
 
         // update variant
         const variant = await variantService.updateVariant(

@@ -128,7 +128,7 @@ const productPopulate = async (product: ProductDocument) => {
         })
         await product.populate({
             path: 'variants',
-            select: 'name',
+            select: 'name colorHex',
         })
         await product.populate({
             path: 'sizes',

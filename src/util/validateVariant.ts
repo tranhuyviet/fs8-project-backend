@@ -5,4 +5,9 @@ const name = Yup.string()
     .max(50, 'Name cannot be longer than 50 characters!')
     .required('Name cannot be empty!')
 
-export const variantValidate = Yup.object({ name })
+const colorHex = Yup.string()
+    .required('Color cannot be empty!')
+    .min(7, 'Color cannot be less than 7 characters')
+    .max(7, 'Color cannot be longer than 7 characters!')
+
+export const variantValidate = Yup.object({ name, colorHex })
