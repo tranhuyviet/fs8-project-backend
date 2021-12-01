@@ -5,7 +5,7 @@ const save = async (category: CategoryDocument): Promise<CategoryDocument> => {
 }
 
 const findByName = async (name: string): Promise<CategoryDocument> => {
-    return Category.findOne({ name })
+    return Category.findOne({ name: name.toLowerCase() })
 }
 
 const findById = async (_id: string): Promise<CategoryDocument> => {

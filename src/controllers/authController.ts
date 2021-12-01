@@ -6,6 +6,7 @@ import {
 } from '../helpers/apiError'
 import jwtDecode from 'jwt-decode'
 import userService from '../services/userService'
+import { COOKIE_NAME } from './userController'
 
 // protected route: checking authentication
 const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
@@ -17,8 +18,8 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
             req.headers.authorization.startsWith('Bearer')
         ) {
             token = req.headers.authorization.split(' ')[1]
-        } else if (req.cookies['jwt-ecommerce-website']) {
-            token = req.cookies['jwt-ecommerce-website']
+        } else if (req.cookies[COOKIE_NAME]) {
+            token = req.cookies[COOKIE_NAME]
         }
         // console.log('TOKEN:', token)
         if (!token)
@@ -33,7 +34,7 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
 
         // Check if user exist
         const user = await userService.findUserById(decode._id)
-
+        // console.log(user)
         if (!user)
             return next(
                 new UnauthorizedError(

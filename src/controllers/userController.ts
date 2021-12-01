@@ -21,6 +21,8 @@ import mongoose from 'mongoose'
 import { sendEmail } from '../util/mailer'
 import crypto from 'crypto'
 
+export const COOKIE_NAME = 'ecommerceJwt'
+
 // SIGNUP USER
 export const signup = async (
     req: Request,
@@ -55,7 +57,7 @@ export const signup = async (
         await userService.save(user)
 
         // create cookie
-        res.cookie('jwt-ecommerce-website', user.returnAuthUser().token, {
+        res.cookie(COOKIE_NAME, user.returnAuthUser().token, {
             httpOnly: true,
         })
 
@@ -112,7 +114,7 @@ export const login = async (
         // not return: 'Email incorrect' or 'Password incorrect'
         if (!user || !user.isValidPassword(password))
             throw new NotFoundError('Invalid credentials', null, {
-                global: 'Invalid credentials',
+                global: 'Invalid credentials. Please make sure you entered the correct email address and password.',
             })
 
         // check user banned (true)
@@ -122,7 +124,7 @@ export const login = async (
             })
 
         // create cookie
-        res.cookie('jwt-ecommerce-website', user.returnAuthUser().token, {
+        res.cookie(COOKIE_NAME, user.returnAuthUser().token, {
             httpOnly: true,
         })
 
@@ -146,7 +148,7 @@ export const login = async (
 // LOGOUT USER
 export const logout = (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.cookie('jwt-ecommerce-website', 'loggedout', {
+        res.cookie(COOKIE_NAME, 'loggedout', {
             httpOnly: true,
         })
         return resSuccess(res)
@@ -170,11 +172,12 @@ export const updateUser = async (
             image?: string
         }
         const variables: Variables = {}
-        const { name, email, image } = req.body
+        const { name, email, image = '' } = req.body
 
         if (name) variables.name = name
         if (email) variables.email = email
-        if (image) variables.image = image
+        // if (image) variables.image = image
+        variables.image = image
 
         await updateUserValidate.validate(req.body, { abortEarly: false })
 
@@ -246,7 +249,7 @@ export const changePassword = async (
         await userService.save(user)
 
         // create new cookie
-        res.cookie('jwt-ecommerce-website', user.returnAuthUser().token, {
+        res.cookie(COOKIE_NAME, user.returnAuthUser().token, {
             httpOnly: true,
         })
 
@@ -355,7 +358,6 @@ export const forgotPassword = async (
         try {
             sendEmail(email, resetUrl)
         } catch (error) {
-            console.log('BBBB', error)
             throw new Error('Send email error')
         }
 

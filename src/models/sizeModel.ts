@@ -10,6 +10,7 @@ const sizeSchema = new Schema({
     name: {
         type: String,
         unique: true,
+        lowercase: true,
     },
 })
 

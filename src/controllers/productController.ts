@@ -208,7 +208,12 @@ export const getAllProducts = async (
         const skip: number = (page - 1) * limit
 
         // caculate total number of products
-        const total: number = await productService.total()
+        const total: number = await productService.total(
+            name,
+            category,
+            variant,
+            size
+        )
 
         // get products
         const products = await productService.getAllProducts(
@@ -256,8 +261,19 @@ export const getProductById = async (
         // populate
         await productPopulate(product)
 
+        // productg suggession
+        const productsSuggess = await productService.suggession(
+            product.category,
+            product._id
+        )
+
+        // populate product suggesstion
+        for (const product of productsSuggess) {
+            await productPopulate(product)
+        }
+
         // return product
-        return resSuccess(res, product)
+        return resSuccess(res, { product, productsSuggess })
     } catch (error) {
         next(error)
     }

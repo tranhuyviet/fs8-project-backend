@@ -5,7 +5,11 @@ const save = async (variant: VariantDocument): Promise<VariantDocument> => {
 }
 
 const findByName = async (name: string): Promise<VariantDocument> => {
-    return Variant.findOne({ name })
+    return Variant.findOne({ name: name.toLowerCase() })
+}
+
+const findByColorHex = async (colorHex: string): Promise<VariantDocument> => {
+    return Variant.findOne({ colorHex: colorHex.toLowerCase() })
 }
 
 const findById = async (_id: string): Promise<VariantDocument> => {
@@ -33,6 +37,7 @@ const deleteVariant = async (_id: string): Promise<VariantDocument> => {
 export default {
     save,
     findByName,
+    findByColorHex,
     findById,
     getAllVariants,
     updateVariant,

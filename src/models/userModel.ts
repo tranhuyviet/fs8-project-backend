@@ -134,6 +134,8 @@ userSchema.methods.generateJWT = function generateJWT() {
             name: this.name,
             email: this.email,
             image: this.image,
+            role: this.role,
+            banned: this.banned,
         },
         process.env.JWT_SECRET as string
     )

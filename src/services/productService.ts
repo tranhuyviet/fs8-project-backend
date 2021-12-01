@@ -46,8 +46,47 @@ const getAllProducts = async (
 }
 
 // calculate total number of products
-const total = async (): Promise<number> => {
-    return Product.find({}).countDocuments()
+const total = async (
+    name: string,
+    category: string,
+    variant: string,
+    size: string
+): Promise<number> => {
+    let query: any = {}
+    const arrayAND: any = []
+
+    if (name && name !== 'undefined') {
+        const splitName = name.split(' ')
+        for (const name of splitName) {
+            arrayAND.push({ name: { $regex: `.*${name}.*`, $options: 'i' } })
+        }
+    }
+
+    if (category && category !== 'undefined') {
+        arrayAND.push({ category: category })
+    }
+
+    if (variant && variant !== 'undefined') {
+        arrayAND.push({ variants: { $eq: variant } })
+    }
+
+    if (size && size !== 'undefined') {
+        arrayAND.push({ sizes: { $eq: size } })
+    }
+
+    if (arrayAND.length > 0) {
+        query = { $and: arrayAND }
+    }
+    return Product.find(query).countDocuments()
+}
+
+const suggession = async (
+    category: string,
+    _id: string
+): Promise<ProductDocument[]> => {
+    return Product.find({ $and: [{ category }, { _id: { $ne: _id } }] }).limit(
+        4
+    )
 }
 
 const findById = async (_id: string): Promise<ProductDocument> => {
@@ -72,6 +111,7 @@ export default {
     save,
     getAllProducts,
     findById,
+    suggession,
     updateProduct,
     deleteProduct,
     total,

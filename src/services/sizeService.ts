@@ -5,7 +5,7 @@ const save = async (size: SizeDocument): Promise<SizeDocument> => {
 }
 
 const findByName = async (name: string): Promise<SizeDocument> => {
-    return Size.findOne({ name })
+    return Size.findOne({ name: name.toLowerCase() })
 }
 
 const findById = async (_id: string): Promise<SizeDocument> => {

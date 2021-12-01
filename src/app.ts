@@ -28,7 +28,24 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(lusca.xframe('SAMEORIGIN'))
 app.use(lusca.xssProtection(true))
-app.use(cors())
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+
+// handling CORS errors
+app.use((req, res, next) => {
+    // res.setHeader('Access-Control-Allow-Origin', '*')
+    // res.setHeader(
+    //     'Access-Control-Allow-Headers',
+    //     'Origin, Content-Type, X-Requested-With, Accept, Authorization'
+    // )
+    // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE')
+    res.header('Content-Type', 'application/json;charset=UTF-8')
+    res.header('Access-Control-Allow-Credentials')
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept'
+    )
+    next()
+})
 
 // ROUTES
 app.use('/api/v1/users', userRoutes)

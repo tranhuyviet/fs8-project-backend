@@ -14,8 +14,8 @@ const confirmPassword = Yup.string()
     .required('Confirm Password cannot be empty!')
     .oneOf([Yup.ref('password')], 'Password not match!')
 const currentPassword = Yup.string()
-    .min(6, 'Password must be at least 6 characters!')
-    .required('Password cannot be empty!')
+    .min(6, 'Current Password must be at least 6 characters!')
+    .required('Current Password cannot be empty!')
 
 export const signupValidate = Yup.object({
     name,

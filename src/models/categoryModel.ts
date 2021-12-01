@@ -10,6 +10,7 @@ const categorySchema = new Schema({
     name: {
         type: String,
         unique: true,
+        lowercase: true,
     },
 })
 

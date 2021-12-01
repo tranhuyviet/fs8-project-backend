@@ -11,9 +11,12 @@ const variantSchema = new Schema({
     name: {
         type: String,
         unique: true,
+        lowercase: true,
     },
     colorHex: {
         type: String,
+        unique: true,
+        lowercase: true,
     },
 })
 

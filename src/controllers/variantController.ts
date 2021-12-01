@@ -30,6 +30,12 @@ export const createVariant = async (
                 name: 'This variant name is already taken',
             })
 
+        const isColorHexExist = await variantService.findByColorHex(colorHex)
+        if (isColorHexExist)
+            throw new BadRequestError('Variant color hex error', null, {
+                colorHex: 'This variant color hex is already taken',
+            })
+
         // create new variant
         const variant = new Variant({ name, colorHex })
 
