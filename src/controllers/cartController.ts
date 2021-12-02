@@ -20,6 +20,7 @@ export const addToCart = async (
     try {
         const cartItems: CartItems = req.body as CartItems
 
+        console.log(cartItems)
         // checking isValid ids
         for (const item of cartItems.items) {
             const isCorrectId = mongoose.Types.ObjectId.isValid(item.product)
@@ -55,6 +56,7 @@ export const addToCart = async (
         // overwrite the cart with payment = false
         const updatedCarts = [...carts, cartItems]
         user.carts = updatedCarts
+
         await userService.save(user)
 
         //populate
@@ -62,16 +64,27 @@ export const addToCart = async (
             path: 'carts',
             populate: {
                 path: 'items',
-                populate: {
-                    path: 'product',
-                    select: 'name price discount',
-                },
+                populate: [
+                    {
+                        path: 'product',
+                        select: 'name price discount images',
+                    },
+                    {
+                        path: 'variant',
+                        select: 'name colorHex',
+                    },
+                    {
+                        path: 'size',
+                        select: 'name',
+                    },
+                ],
             },
         })
 
+        // console.log('USER', user)
+
         // find the cart have just save (payment = false)
         const returnCart = user.carts.find((cart) => cart.payment === false)
-
         return resSuccess(res, returnCart)
     } catch (error) {
         next(error)

@@ -20,6 +20,8 @@ export interface ReturnUser {
 export type Item = Document & {
     product: string
     quantity: number
+    variant: string
+    size: string
 }
 
 export type CartItems = Document & {
@@ -101,6 +103,14 @@ const userSchema = new Schema(
                                 quantity: {
                                     type: Number,
                                     default: 0,
+                                },
+                                variant: {
+                                    type: Types.ObjectId,
+                                    ref: 'variants',
+                                },
+                                size: {
+                                    type: Types.ObjectId,
+                                    ref: 'sizes',
                                 },
                             },
                             { _id: false }

@@ -42,7 +42,13 @@ const getAllProducts = async (
         query = { $and: arrayAND }
     }
 
-    return Product.find(query).skip(skip).limit(limit)
+    return Product.find(query)
+        .skip(skip)
+        .limit(limit)
+        .populate([
+            { path: 'variants', select: 'name colorHex' },
+            { path: 'sizes', select: 'name' },
+        ])
 }
 
 // calculate total number of products
@@ -84,13 +90,25 @@ const suggession = async (
     category: string,
     _id: string
 ): Promise<ProductDocument[]> => {
-    return Product.find({ $and: [{ category }, { _id: { $ne: _id } }] }).limit(
-        4
-    )
+    return Product.find({ $and: [{ category }, { _id: { $ne: _id } }] })
+        .limit(4)
+        .populate([
+            { path: 'variants', select: 'name colorHex' },
+            { path: 'sizes', select: 'name' },
+        ])
 }
 
 const findById = async (_id: string): Promise<ProductDocument> => {
-    return Product.findById(_id)
+    return Product.findById(_id).populate([
+        {
+            path: 'variants',
+            select: 'name colorHex',
+        },
+        {
+            path: 'sizes',
+            select: 'name',
+        },
+    ])
 }
 
 const updateProduct = async (

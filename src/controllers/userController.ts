@@ -352,7 +352,8 @@ export const forgotPassword = async (
         const resetToken = user.createTokenResetPassword()
         await userService.save(user)
 
-        const resetUrl = `http://localhost:5001/api/v1/users/reset-password/${resetToken}`
+        // const resetUrl = `http://localhost:5001/api/v1/users/reset-password/${resetToken}`
+        const resetUrl = `http://localhost:3000/user/reset-password/${resetToken}`
 
         // sent the email
         try {

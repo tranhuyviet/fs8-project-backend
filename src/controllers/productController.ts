@@ -118,14 +118,14 @@ const validateProduct = async (variables: ProductDocument) => {
 
 const productPopulate = async (product: ProductDocument) => {
     try {
-        await product.populate({
-            path: 'category',
-            select: 'name',
-        })
-        await product.populate({
-            path: 'user',
-            select: 'name email image',
-        })
+        // await product.populate({
+        //     path: 'category',
+        //     select: 'name',
+        // })
+        // await product.populate({
+        //     path: 'user',
+        //     select: 'name email image',
+        // })
         await product.populate({
             path: 'variants',
             select: 'name colorHex',
@@ -227,9 +227,9 @@ export const getAllProducts = async (
         if (!products) throw new NotFoundError('Not found any products')
 
         // populate
-        for (const product of products) {
-            await productPopulate(product)
-        }
+        // for (const product of products) {
+        //     await productPopulate(product)
+        // }
 
         // return resSuccess(res, products)
         return res.status(200).json({
@@ -259,7 +259,7 @@ export const getProductById = async (
             throw new BadRequestError('Product not found, ID proviced invalid')
 
         // populate
-        await productPopulate(product)
+        //await productPopulate(product)
 
         // productg suggession
         const productsSuggess = await productService.suggession(
@@ -268,9 +268,9 @@ export const getProductById = async (
         )
 
         // populate product suggesstion
-        for (const product of productsSuggess) {
-            await productPopulate(product)
-        }
+        // for (const product of productsSuggess) {
+        //     await productPopulate(product)
+        // }
 
         // return product
         return resSuccess(res, { product, productsSuggess })

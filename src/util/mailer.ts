@@ -26,7 +26,7 @@ export const sendEmail = (email: string, resetUrl: string) => {
             <p>${resetUrl}</p>
             
             <br/>            
-            <h4>E-commerce Website</h4>
+            <h4>Fashion Shop</h4>
             <h4>Viet Tran</h4>
         `,
     }
