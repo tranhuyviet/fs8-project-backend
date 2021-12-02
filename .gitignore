@@ -39,3 +39,5 @@ dist/**/*
 
 *.swo
 *.swp
+
+.vercel

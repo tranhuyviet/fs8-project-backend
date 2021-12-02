@@ -1,16 +1,3 @@
 {
-    "version": 2,
-    "name": "vt-fs8-backend",
-    "builds": [
-        {
-            "src": "./src/server.ts",
-            "use": "@vercel/node"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/"
-        }
-    ]
+    "version": 2
 }
