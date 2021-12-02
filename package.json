@@ -10,7 +10,7 @@
     "license": "MIT",
     "scripts": {
         "dev": "ts-node-dev --respawn src/server.ts",
-        "start": "npm run serve",
+        "start": "node src/server.ts",
         "build": "npm run build-sass && npm run build-ts && npm run lint && npm run copy-static-assets",
         "serve": "node dist/server.js",
         "watch-node": "nodemon dist/server.js",
