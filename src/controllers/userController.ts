@@ -61,7 +61,7 @@ export const signup = async (
             httpOnly: true,
             secure: true,
             maxAge: 60 * 60 * 24 * 30,
-            sameSite: 'strict',
+            sameSite: 'none',
             path: '/',
         })
 
@@ -132,7 +132,7 @@ export const login = async (
             httpOnly: true,
             secure: true,
             maxAge: 60 * 60 * 24 * 30,
-            sameSite: 'strict',
+            sameSite: 'none',
             path: '/',
         })
 
@@ -160,7 +160,7 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
             httpOnly: true,
             secure: true,
             expires: new Date(0),
-            sameSite: 'strict',
+            sameSite: 'none',
             path: '/',
         })
         return resSuccess(res)
@@ -265,7 +265,7 @@ export const changePassword = async (
             httpOnly: true,
             secure: true,
             maxAge: 60 * 60 * 24 * 30,
-            sameSite: 'strict',
+            sameSite: 'none',
             path: '/',
         })
 
