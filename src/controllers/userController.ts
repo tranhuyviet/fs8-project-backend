@@ -59,6 +59,10 @@ export const signup = async (
         // create cookie
         res.cookie(COOKIE_NAME, user.returnAuthUser().token, {
             httpOnly: true,
+            secure: true,
+            maxAge: 60 * 60 * 24 * 30,
+            sameSite: 'strict',
+            path: '/',
         })
 
         // return user with authentication
@@ -126,6 +130,10 @@ export const login = async (
         // create cookie
         res.cookie(COOKIE_NAME, user.returnAuthUser().token, {
             httpOnly: true,
+            secure: true,
+            maxAge: 60 * 60 * 24 * 30,
+            sameSite: 'strict',
+            path: '/',
         })
 
         // return user with authentication
@@ -150,6 +158,10 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
     try {
         res.cookie(COOKIE_NAME, 'loggedout', {
             httpOnly: true,
+            secure: true,
+            expires: new Date(0),
+            sameSite: 'strict',
+            path: '/',
         })
         return resSuccess(res)
     } catch (error) {
@@ -251,6 +263,10 @@ export const changePassword = async (
         // create new cookie
         res.cookie(COOKIE_NAME, user.returnAuthUser().token, {
             httpOnly: true,
+            secure: true,
+            maxAge: 60 * 60 * 24 * 30,
+            sameSite: 'strict',
+            path: '/',
         })
 
         // return user with authentication
