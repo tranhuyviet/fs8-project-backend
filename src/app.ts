@@ -28,7 +28,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(lusca.xframe('SAMEORIGIN'))
 app.use(lusca.xssProtection(true))
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+app.use(cors({ credentials: true, origin: 'https://fs8-project.vercel.app' }))
 
 // handling CORS errors
 app.use((req, res, next) => {
