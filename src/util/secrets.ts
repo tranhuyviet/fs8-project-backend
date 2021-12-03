@@ -22,6 +22,11 @@ export const EMAIL_PORT = process.env['EMAIL_PORT']
 export const EMAIL_USER = process.env['EMAIL_USER']
 export const EMAIL_PASS = process.env['EMAIL_PASS']
 
+// GOOGLE
+export const GOOGLE_CLIENT_ID = process.env['GOOGLE_CLIENT_ID']
+export const GOOGLE_CLIENT_SECRET = process.env['GOOGLE_CLIENT_SECRET']
+export const GOOGLE_REFRESH_TOKEN = process.env['GOOGLE_REFRESH_TOKEN']
+
 export const PORT = process.env['PORT']
 export const JWT_COOKIE_EXPIRES_IN = process.env['JWT_COOKIE_EXPIRES_IN']
 export const JWT_SECRET = process.env['JWT_SECRET'] as string
