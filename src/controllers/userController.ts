@@ -22,6 +22,7 @@ import { sendEmail } from '../util/mailer'
 import crypto from 'crypto'
 
 export const COOKIE_NAME = 'ecommerceJwt'
+const COOKIE_DOMAIN = 'http://localhost:3000'
 
 // SIGNUP USER
 export const signup = async (
@@ -63,7 +64,6 @@ export const signup = async (
             maxAge: 60 * 60 * 24 * 30,
             sameSite: 'none',
             path: '/',
-            domain: 'https://fs8-project.vercel.app',
         })
 
         // return user with authentication
@@ -135,7 +135,6 @@ export const login = async (
             maxAge: 60 * 60 * 24 * 30,
             sameSite: 'none',
             path: '/',
-            domain: 'https://fs8-project.vercel.app',
         })
 
         // return user with authentication
@@ -164,7 +163,6 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
             expires: new Date(0),
             sameSite: 'none',
             path: '/',
-            domain: 'https://fs8-project.vercel.app',
         })
         return resSuccess(res)
     } catch (error) {
@@ -270,7 +268,6 @@ export const changePassword = async (
             maxAge: 60 * 60 * 24 * 30,
             sameSite: 'none',
             path: '/',
-            domain: 'https://fs8-project.vercel.app',
         })
 
         // return user with authentication
