@@ -19,6 +19,7 @@ import cartRoutes from './routers/cartRoutes'
 dotenv.config({ path: '.env' })
 const app = express()
 
+app.set('trust proxy', 1)
 // Express configuration
 app.use(apiContentType)
 
