@@ -63,6 +63,7 @@ export const signup = async (
             maxAge: 60 * 60 * 24 * 30,
             sameSite: 'none',
             path: '/',
+            domain: 'http://localhost:3000',
         })
 
         // return user with authentication
@@ -134,6 +135,7 @@ export const login = async (
             maxAge: 60 * 60 * 24 * 30,
             sameSite: 'none',
             path: '/',
+            domain: 'http://localhost:3000',
         })
 
         // return user with authentication
@@ -162,6 +164,7 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
             expires: new Date(0),
             sameSite: 'none',
             path: '/',
+            domain: 'http://localhost:3000',
         })
         return resSuccess(res)
     } catch (error) {
@@ -267,6 +270,7 @@ export const changePassword = async (
             maxAge: 60 * 60 * 24 * 30,
             sameSite: 'none',
             path: '/',
+            domain: 'http://localhost:3000',
         })
 
         // return user with authentication
