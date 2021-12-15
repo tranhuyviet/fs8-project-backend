@@ -10,6 +10,7 @@ export interface ReturnUser {
     name: string
     email: string
     image?: string
+    provider: string
     role: string
     banned: boolean
     token?: string
@@ -36,6 +37,7 @@ export type UserDocument = Document & {
     name: string
     email: string
     image?: string
+    provider: string
     password?: string
     role: string
     banned: boolean
@@ -69,6 +71,10 @@ const userSchema = new Schema(
             type: String,
             default:
                 'https://res.cloudinary.com/dzaxf70c4/image/upload/v1636489332/avatar_tcj5dx.png',
+        },
+        provider: {
+            type: String,
+            default: 'credentials',
         },
         password: {
             type: String,
@@ -144,6 +150,7 @@ userSchema.methods.generateJWT = function generateJWT() {
             name: this.name,
             email: this.email,
             image: this.image,
+            provider: this.provider,
             role: this.role,
             banned: this.banned,
         },
@@ -158,6 +165,7 @@ userSchema.methods.returnAuthUser = function returnAuthUser() {
         name: this.name,
         email: this.email,
         image: this.image,
+        provider: this.provider,
         role: this.role,
         banned: this.banned,
         token: this.generateJWT(),
@@ -171,6 +179,7 @@ userSchema.methods.returnUser = function returnUser(): ReturnUser {
         name: this.name,
         email: this.email,
         image: this.image,
+        provider: this.provider,
         role: this.role,
         banned: this.banned,
         updatedAt: this.updatedAt,

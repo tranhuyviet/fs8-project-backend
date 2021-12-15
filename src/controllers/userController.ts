@@ -154,6 +154,52 @@ export const login = async (
     }
 }
 
+// LOGIN USER OAUTH
+export const loginOauth = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        // console.log(req.body)
+        const { name, email, image, provider } = req.body
+
+        // checking email is exist -> throw error, if not -> create new user
+        const isUserExist = await userService.findUserByEmail(email)
+        // if user exist -> update user
+        let user
+        if (isUserExist) {
+            user = await userService.updateUser(isUserExist._id, {
+                name,
+                email,
+                image,
+                provider,
+            })
+        } else {
+            // create new user
+            user = new User({ name, email, image, provider })
+            await userService.save(user)
+        }
+
+        // save user
+        console.log(user)
+        // return user with authentication
+        return resSuccess(res, user.returnAuthUser())
+    } catch (error) {
+        if (error instanceof Error && error.name == 'ValidationError') {
+            next(
+                new BadRequestError(
+                    'Login OAuth Validate Error',
+                    error,
+                    errorParse(error)
+                )
+            )
+        } else {
+            next(error)
+        }
+    }
+}
+
 // LOGOUT USER
 export const logout = (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -3,6 +3,7 @@ import {
     signup,
     getAllUsers,
     login,
+    loginOauth,
     logout,
     updateUser,
     changePassword,
@@ -16,7 +17,7 @@ import authController from '../controllers/authController'
 const router = Router()
 
 router.post('/signup', signup)
-router.post('/login', login)
+router.post('/login', login), router.post('/login-oauth', loginOauth)
 router.post('/forgot-password', forgotPassword)
 router.patch('/reset-password/:token', resetPassword)
 
